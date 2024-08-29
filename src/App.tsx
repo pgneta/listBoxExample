@@ -1,25 +1,21 @@
+// App.tsx
 import React from 'react';
-import logo from './logo.svg';
+import {ExampleMultiSelectListBoxDynamicSelector } from './components/multiSelectionList/ExampleMultiSelectListBoxDynamicSelector';
 import './App.css';
+import {mockGetItemsById, mockSearchItems} from "./mock/mockUtils";
+import {PAGE_SIZE} from "./consts";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="App">
+        <h1>Multi Select ListBox - Example</h1>
+        <ExampleMultiSelectListBoxDynamicSelector
+            initialSelectedIds={['1','8','24']}
+            searchFunction={mockSearchItems}
+            getItemsById={mockGetItemsById}
+            pageSize={PAGE_SIZE}
+        />
+      </div>
   );
 }
 
