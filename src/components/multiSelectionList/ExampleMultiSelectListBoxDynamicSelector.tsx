@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {Item, ListBoxProps} from "../types";
-import {ButtonsContainer, Container, List, ListItem, SearchInput, ShowButton} from "./styled";
+import {ButtonsContainer, Container, List, ListItem, SearchInput, ShowButton} from "../styled";
 
 
 export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = ({
@@ -10,30 +10,56 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
                                                                pageSize
                                                            }) => {
     const [items, setItems] = useState<Item[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loadingCount, setLoadingCount] = useState<number>(0);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [page, setPage] = useState<number>(0);
-    const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const [userSelectedItems, setUserSelectedItems] = useState<string[]>([]);
+    const [preSelectedItems, setPreSelectedItems] = useState<Item[]>([]);
+    const latestSearchRequestRef = useRef<number>(0);
+    const [itemsBeforeSearch, setItemsBeforeSearch] = useState<number>(0);
+    const [newData, setNewData] = useState<boolean>(false);
 
-    const updateSelectedItems = (items: Item[]) => {
-       items.map((item) => setSelectedItems(prevSelected =>  prevSelected.includes(item.value)
+    const updateUserSelectedItems = (items: Item[]) => {
+       items.map((item) => setUserSelectedItems(prevSelected =>  prevSelected.includes(item.value)
            ? prevSelected : [...prevSelected, item.value]));
     };
 
+    // const toggleSelection = (value: string) => {
+    //     setUserSelectedItems((prevSelected) =>
+    //         prevSelected.includes(value)
+    //             ? prevSelected.filter((item) => item !== value)
+    //             : [...prevSelected, value]
+    //     );
+    // };
     const toggleSelection = (value: string) => {
-        setSelectedItems((prevSelected) =>
-            prevSelected.includes(value)
+        setUserSelectedItems((prevSelected) => {
+            const isSelected = prevSelected.includes(value);
+            const updatedSelectedItems = isSelected
                 ? prevSelected.filter((item) => item !== value)
-                : [...prevSelected, value]
-        );
-    };
+                : [...prevSelected, value];
+
+            // Check if the item being unselected is a pre-selected item
+            if (isSelected && preSelectedItems.some(item => item.value === value)) {
+                // Remove the item from preSelectedItems
+                const updatedPreSelectedItems = preSelectedItems.filter(item => item.value !== value);
+                setPreSelectedItems(updatedPreSelectedItems);
+            }
+
+            return updatedSelectedItems;
+        });
+    }
+
+
+
+
     useEffect(() => {
         const fetchInitialSelectedItems = async () => {
-            setLoading(true);
+            setLoadingCount(prevCount => prevCount + 1);
             const selectedItems = await getItemsById(initialSelectedIds);
             setItems(selectedItems);
-            updateSelectedItems(selectedItems);
-            setLoading(false);
+            updateUserSelectedItems(selectedItems);
+            setPreSelectedItems(selectedItems);
+            setLoadingCount(prevCount => prevCount - 1);
         };
 
         fetchInitialSelectedItems();
@@ -42,16 +68,28 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
 
     useEffect(() => {
         const fetchItems = async () => {
-            setLoading(true);
+            const requestId = ++latestSearchRequestRef.current; // solving the Search Issue where old search completed after new one
+            setLoadingCount(prevCount => prevCount + 1);
             const fetchedItems = await searchFunction(searchTerm, page);
+            // if this is an irrelevant search
+            if (requestId !== latestSearchRequestRef.current) {
+                setLoadingCount(prevCount => prevCount - 1);
+                return;
+            }
+            if (fetchedItems.length === 0) {
+                setNewData(false);
+            } else {
+                setNewData(true);
+            }
+
             setItems((prevItems) => {
-                const newItems = [...prevItems, ...fetchedItems];
+                const newItems = [...preSelectedItems, ...prevItems, ...fetchedItems];
                 const uniqueItems = Array.from(
                     new Set(newItems.map((item) => item.value))
                 ).map((value) => newItems.find((item) => item.value === value)!);
                 return uniqueItems;
             });
-            setLoading(false);
+            setLoadingCount(prevCount => prevCount - 1);
         };
 
         fetchItems();
@@ -64,6 +102,13 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
     };
 
     const handleShowMore = () => {
+        if (itemsBeforeSearch > items.length || items.length <=preSelectedItems.length) {
+            return;
+        }
+        if (!newData) {
+            return;
+        }
+        setItems((prevItems) => [...prevItems, ...preSelectedItems]);
         setPage((prevPage) => prevPage + 1);
     };
     const handleShowLess = () => {
@@ -82,15 +127,15 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
             <List>
                 {items.map((item) => (
                     <ListItem key={item.value}
-                              className={selectedItems.includes(item.value) ? 'selected' : ''}
+                              className={userSelectedItems.includes(item.value) ? 'selected' : ''}
                               onClick={() => toggleSelection(item.value)}>{item.name}</ListItem>
                 ))}
             </List>
-            {loading && <Loading/>}
-            {!loading && <TotalItems/>}
+            {(loadingCount > 0)  && <Loading/>}
+            {(loadingCount === 0 ) && <TotalItems/>}
             <ButtonsContainer>
                 <ShowButton onClick={handleShowMore}>Show More</ShowButton>
-                <ShowButton onClick={handleShowLess} disabled={page === 0}>Show Less</ShowButton>
+                <ShowButton onClick={handleShowLess} disabled={page === 0 }>Show Less</ShowButton>
             </ButtonsContainer>
         </Container>
     );

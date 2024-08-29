@@ -7,8 +7,16 @@ const LIGHT_BLUE = '#0fc8ef';
 const TORY_BLUE = '#123dbc';
 const BLUE_FOR_BUTTON = '#2075b6'
 const HOVER_BLUE = '#123dbc';
+const BUTTON_SHADOW_COLOR = '#ceecfe';
+const BUTTON_SHADOW_COLOR2 = '#d0ecfee';
+const HOVER_TEXT_COLOR = '#05a8ff';
 // const HOVER_BLUE = '#4183be';
 
+export const Header = styled.h1`
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: ${DARK_BLUE};
+`;
 export const Container = styled.div`
     padding: 10px;
     background-color: #f5f5f5;
@@ -18,16 +26,16 @@ export const Container = styled.div`
     min-height: 50vh;
 `;
 
-// Style for the list of items
 export const List = styled.ul`
     list-style-type: none;
     padding: 0;
-    margin: 0;
     width: 40%;
-    max-height: 50vh; 
+    max-height: 50vh;
     overflow-y: scroll;
-    border: 1px solid #ccc; 
-    border-radius: 4px; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    margin-top: 0;
 `;
 
 export const ListItem = styled.li`
@@ -37,6 +45,8 @@ export const ListItem = styled.li`
     padding: 10px;
     border: 1px solid #ccc;
     text-align: center;
+    
+   
 
     &:nth-child(even) {
         background-color: #f2f2f2;
@@ -58,30 +68,36 @@ export const ListItem = styled.li`
     }
 `;
 
-// Input for searching items
 export const SearchInput = styled.input`
-    margin-bottom: 10px;
     padding: 5px;
     width: 40%;
     border-radius: 10px;
 
 `;
 
-// Button for loading more items
 
 export const ButtonsContainer = styled.div``;
 export const ShowButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${({ disabled }) => (disabled ? '#ccc' : BLUE_FOR_BUTTON)};
+    background-color: ${({disabled}) => (disabled ? '#ccc' : BLUE_FOR_BUTTON)};
     color: #fff;
-    padding: 10px 15px;
+    padding: 8px 10px;
     border: none;
-    cursor:  ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+    cursor: ${({disabled}) => (disabled ? 'not-allowed' : 'pointer')};
     margin-top: 10px;
     margin-left: 10px;
     border-radius: 10px;
-
+    font-weight: bold;
+    ${({disabled}) =>
+            !disabled && `
+    box-shadow: ${BUTTON_SHADOW_COLOR} -1px 0px 4px 4px;
+    `}
+    
     &:hover {
-        ${({ disabled }) => (disabled ? '' : `background-color: ${HOVER_BLUE};`)
-       // background-color: ${HOVER_BLUE};
+        ${({disabled}) =>
+                disabled ? '' : `
+           background-color: WHITE;
+           color: ${HOVER_TEXT_COLOR};
+       
+       `}
     }
 `;
