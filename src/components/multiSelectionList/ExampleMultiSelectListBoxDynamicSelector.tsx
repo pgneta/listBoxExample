@@ -16,7 +16,6 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
     const [userSelectedItems, setUserSelectedItems] = useState<string[]>([]);
     const [preSelectedItems, setPreSelectedItems] = useState<Item[]>([]);
     const latestSearchRequestRef = useRef<number>(0);
-    // const [itemsBeforeSearch, setItemsBeforeSearch] = useState<number>(0);
     const [newData, setNewData] = useState<boolean>(true);
 
 
@@ -57,7 +56,6 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
         };
 
         fetchInitialSelectedItems();
-    // }, [initialSelectedIds, getItemsById]);
     }, []);
 
     useEffect(() => {
@@ -116,7 +114,7 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
         return <div>Loading...</div>;
     }
 
-    const disableShowMore = (!newData || (items.length < (pageSize + preSelectedItems.length))) && items.length > 0;
+     const disableShowMore = !newData || (items.length < (pageSize ))
 
     return (
         <Container>
@@ -136,7 +134,6 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
             </ButtonsContainer>
         </Container>
     );
-
 
 };
 
