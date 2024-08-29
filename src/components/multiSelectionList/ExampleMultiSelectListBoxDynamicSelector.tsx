@@ -16,21 +16,15 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
     const [userSelectedItems, setUserSelectedItems] = useState<string[]>([]);
     const [preSelectedItems, setPreSelectedItems] = useState<Item[]>([]);
     const latestSearchRequestRef = useRef<number>(0);
-    const [itemsBeforeSearch, setItemsBeforeSearch] = useState<number>(0);
-    const [newData, setNewData] = useState<boolean>(false);
+    // const [itemsBeforeSearch, setItemsBeforeSearch] = useState<number>(0);
+    const [newData, setNewData] = useState<boolean>(true);
+
 
     const updateUserSelectedItems = (items: Item[]) => {
        items.map((item) => setUserSelectedItems(prevSelected =>  prevSelected.includes(item.value)
            ? prevSelected : [...prevSelected, item.value]));
     };
 
-    // const toggleSelection = (value: string) => {
-    //     setUserSelectedItems((prevSelected) =>
-    //         prevSelected.includes(value)
-    //             ? prevSelected.filter((item) => item !== value)
-    //             : [...prevSelected, value]
-    //     );
-    // };
     const toggleSelection = (value: string) => {
         setUserSelectedItems((prevSelected) => {
             const isSelected = prevSelected.includes(value);
@@ -102,13 +96,13 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
     };
 
     const handleShowMore = () => {
-        if (itemsBeforeSearch > items.length || items.length <=preSelectedItems.length) {
+        if ( items.length <=preSelectedItems.length) {
             return;
         }
         if (!newData) {
             return;
         }
-        setItems((prevItems) => [...prevItems, ...preSelectedItems]);
+        // setItems((prevItems) => [...prevItems, ...preSelectedItems]);
         setPage((prevPage) => prevPage + 1);
     };
     const handleShowLess = () => {
@@ -121,6 +115,9 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
     const Loading: React.FC = () => {
         return <div>Loading...</div>;
     }
+
+    const disableShowMore = (!newData || (items.length < (pageSize + preSelectedItems.length))) && items.length > 0;
+
     return (
         <Container>
             <SearchInput type="text" placeholder="Search..." onChange={handleSearchChange}/>
@@ -134,7 +131,7 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
             {(loadingCount > 0)  && <Loading/>}
             {(loadingCount === 0 ) && <TotalItems/>}
             <ButtonsContainer>
-                <ShowButton onClick={handleShowMore}>Show More</ShowButton>
+                <ShowButton onClick={handleShowMore} disabled={disableShowMore}>Show More</ShowButton>
                 <ShowButton onClick={handleShowLess} disabled={page === 0 }>Show Less</ShowButton>
             </ButtonsContainer>
         </Container>
