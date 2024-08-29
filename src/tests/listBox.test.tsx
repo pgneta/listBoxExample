@@ -26,7 +26,7 @@ describe('MultiSelectListBox Component', () => {
 
         // Wait for items to appear
         await waitFor(() => {
-            expect(screen.getByText(/Item Name 1/i)).toBeInTheDocument();
+            expect(screen.getByText(/^Item Name 1$/).textContent).toBe('Item Name 1');
         }, { timeout: 6000 });
     });
 
@@ -47,14 +47,14 @@ describe('MultiSelectListBox Component', () => {
 
         // Wait for items to appear
         await waitFor(() => {
-            expect(screen.getByText(/Item Name 2/i)).toBeInTheDocument();
+            expect(screen.getByText('Item Name 2').textContent).toBe('Item Name 2');
         }, { timeout: 6000 });
 
         // Simulate item click
-        fireEvent.click(screen.getByText(/Item Name 2/i));
+        fireEvent.click(screen.getByText(/^Item Name 2$/));
 
         // Check if item is selected
-        expect(screen.getByText(/Item Name 2/i)).toHaveClass('selected');
+        expect(screen.getByText(/^Item Name 2$/)).toHaveClass('selected');
     });
 
     it('shows loading indicator during data fetch', async () => {
