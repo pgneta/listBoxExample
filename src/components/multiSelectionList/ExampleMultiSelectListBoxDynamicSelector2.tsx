@@ -15,6 +15,7 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
     const latestSearchRequestRef = useRef<number>(0);
     const [loadingCount, setLoadingCount] = useState<number>(0);
     const [fetchPreSelectedCompleted, setFetchPreSelectedCompleted] = useState<boolean>(false);
+    const [fetchedNewData, setFetchedNewData] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchPreSelectedItems = async () => {
@@ -43,9 +44,10 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
                 const fetchedItems = await searchFunction(searchTerm, page);
 
                 if (requestId !== latestSearchRequestRef.current) {
-                    setLoadingCount(prevCount => prevCount - 1);
+                    //setLoadingCount(prevCount => prevCount - 1);
                     return;
                 }
+                setFetchedNewData(fetchedItems.length !== 0);
 
                 setFetchedItems((prevItems) => {
                     // Combine prevItems and fetchedItems
@@ -118,41 +120,6 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
         });
 
     };
-    //
-    // useEffect(() => {
-    //     const fetchInitialSelectedItems = async () => {
-    //         setLoadingCount(prevCount => prevCount + 1);
-    //         const fetchedPreSelected = await getItemsById(initialSelectedIds);
-    //         setPreSelectedItems(fetchedPreSelected);
-    //         setLoadingCount(prevCount => prevCount - 1);
-    //     };
-    //
-    //     fetchInitialSelectedItems();
-    // }, []);
-    //
-    // useEffect(() => {
-    //     const fetchItems = async () => {
-    //         const requestId = ++latestSearchRequestRef.current;
-    //         setLoadingCount(prevCount => prevCount + 1);
-    //         if (requestId !== latestSearchRequestRef.current) {
-    //             setLoadingCount(prevCount => prevCount - 1);
-    //             return;
-    //         }
-    //         const getFetchedItems = await searchFunction(searchTerm, page);
-    //
-    //         setFetchedItems((prevItems) =>
-    //             [...preSelectedItems, ...prevItems, ...getFetchedItems].reduce((acc, item) => {
-    //                 if (!acc.find(existingItem => existingItem.value === item.value)) {
-    //                     acc.push(item);
-    //                 }
-    //                 return acc;
-    //             }, [] as Item[])
-    //         );
-    //         setLoadingCount(prevCount => prevCount - 1);
-    //     };
-    //
-    //     fetchItems();
-    // }, [searchTerm, page]);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
@@ -161,9 +128,6 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
     };
 
     const handleShowMore = () => {
-        // if (fetchedItems.length <= pageSize) {
-        //     return;
-        // }
         setPage((prevPage) => prevPage + 1);
     };
 
@@ -173,16 +137,15 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
     };
 
     const TotalItems: React.FC = () => {
-        return <div>Total items: {fetchedItems.length + preSelectedItems.length}, page: {page}</div>;
+        return <div>Total items: {fetchedItems.length + preSelectedItems.length}</div>//, page: {page} , loading: {loadingCount}</div>;
     };
 
     const Loading: React.FC = () => {
         return <div>Loading...</div>;
     };
 
-   // const disableShowMore = fetchedItems.length < pageSize || fetchedItems.length === 0;
+    const disableShowMore = () => !fetchedNewData || fetchedItems.length + preSelectedItems.length < pageSize ;
 
-    // setDisableShowMore(  fetchedItems.length < pageSize);
 
     return (
         <Container>
@@ -210,7 +173,7 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
             {loadingCount > 0 ? <Loading/> : <TotalItems/>}
             {/*{loadingCount === 0 && <TotalItems/>}*/}
             <ButtonsContainer>
-                <ShowButton onClick={handleShowMore} disabled={false}>Show More</ShowButton>
+                <ShowButton onClick={handleShowMore} disabled={disableShowMore()}>Show More</ShowButton>
                 <ShowButton onClick={handleShowLess} disabled={page === 0}>Show Less</ShowButton>
             </ButtonsContainer>
         </Container>
