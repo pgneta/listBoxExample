@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Item, ListBoxProps} from "../types";
 import {ButtonsContainer, Container, List, ListItem, SearchInput, ShowButton} from "../styled";
 
@@ -15,7 +15,6 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
     const latestSearchRequestRef = useRef<number>(0);
     const [loadingCount, setLoadingCount] = useState<number>(0);
     const [fetchPreSelectedCompleted, setFetchPreSelectedCompleted] = useState<boolean>(false);
-    const [disableShowMore,setDisableShowMore] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchPreSelectedItems = async () => {
@@ -65,8 +64,13 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
                         return acc;
                     }, [] as Item[]);
 
-                    // Return the deduplicated items to update the state
-                    return deduplicatedItems;
+                    // Sort deduplicatedItems by name
+                    return deduplicatedItems.sort((a, b) => {
+                        const valueA = parseInt(a.value, 10);
+                        const valueB = parseInt(b.value, 10);
+                        return valueA - valueB;
+                    });
+
                 });
 
             } catch (error) {
@@ -203,8 +207,8 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
                     </ListItem>
                 ))}
             </List>
-            {loadingCount > 0 && <Loading/>}
-            {loadingCount === 0 && <TotalItems/>}
+            {loadingCount > 0 ? <Loading/> : <TotalItems/>}
+            {/*{loadingCount === 0 && <TotalItems/>}*/}
             <ButtonsContainer>
                 <ShowButton onClick={handleShowMore} disabled={false}>Show More</ShowButton>
                 <ShowButton onClick={handleShowLess} disabled={page === 0}>Show Less</ShowButton>
