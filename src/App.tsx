@@ -5,14 +5,14 @@ import {mockGetItemsById, mockSearchItems} from "./mock/mockUtils";
 import {PAGE_SIZE} from "./consts";
 import {ListHeader} from "./components/ListHeader";
 import {
-    ExampleMultiSelectListBoxDynamicSelector2
-} from "./components/multiSelectionList/ExampleMultiSelectListBoxDynamicSelector2";
+    ExampleMultiSelectListBoxDynamicSelector
+} from "./components/multiSelectionList/ExampleMultiSelectListBoxDynamicSelector";
 
 function App() {
   return (
       <div className="App">
         <ListHeader />
-        <ExampleMultiSelectListBoxDynamicSelector2
+        <ExampleMultiSelectListBoxDynamicSelector
             initialSelectedIds={['0','29','8','24']}
             searchFunction={mockSearchItems}
             getItemsById={mockGetItemsById}
