@@ -15,7 +15,7 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
     const latestSearchRequestRef = useRef<number>(0);
     const [loadingCount, setLoadingCount] = useState<number>(0);
     const [fetchPreSelectedCompleted, setFetchPreSelectedCompleted] = useState<boolean>(false);
-
+    const [disableShowMore,setDisableShowMore] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchPreSelectedItems = async () => {
@@ -47,8 +47,6 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
                     setLoadingCount(prevCount => prevCount - 1);
                     return;
                 }
-
-
 
                 setFetchedItems((prevItems) => {
                     // Combine prevItems and fetchedItems
@@ -159,9 +157,9 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
     };
 
     const handleShowMore = () => {
-        if (fetchedItems.length <= pageSize) {
-            return;
-        }
+        // if (fetchedItems.length <= pageSize) {
+        //     return;
+        // }
         setPage((prevPage) => prevPage + 1);
     };
 
@@ -178,7 +176,9 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
         return <div>Loading...</div>;
     };
 
-    const disableShowMore = fetchedItems.length < pageSize || fetchedItems.length === 0;
+   // const disableShowMore = fetchedItems.length < pageSize || fetchedItems.length === 0;
+
+    // setDisableShowMore(  fetchedItems.length < pageSize);
 
     return (
         <Container>
@@ -206,7 +206,7 @@ export const ExampleMultiSelectListBoxDynamicSelector2: React.FC<ListBoxProps> =
             {loadingCount > 0 && <Loading/>}
             {loadingCount === 0 && <TotalItems/>}
             <ButtonsContainer>
-                <ShowButton onClick={handleShowMore} disabled={disableShowMore}>Show More</ShowButton>
+                <ShowButton onClick={handleShowMore} disabled={false}>Show More</ShowButton>
                 <ShowButton onClick={handleShowLess} disabled={page === 0}>Show Less</ShowButton>
             </ButtonsContainer>
         </Container>
