@@ -13,27 +13,32 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
     const [loadingCount, setLoadingCount] = useState<number>(0);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [page, setPage] = useState<number>(0);
-    const [userSelectedItems, setUserSelectedItems] = useState<string[]>([]);
+    const [userSelectedValues, setUserSelectedValues] = useState<string[]>([]);
     const [preSelectedItems, setPreSelectedItems] = useState<Item[]>([]);
+    const [preSelectedNames, setPreSelectedNames] = useState<string[]>([]);
     const latestSearchRequestRef = useRef<number>(0);
     const [newData, setNewData] = useState<boolean>(true);
 
 
-    const updateUserSelectedItems = (items: Item[]) => {
-       items.map((item) => setUserSelectedItems(prevSelected =>  prevSelected.includes(item.value)
-           ? prevSelected : [...prevSelected, item.value]));
-    };
+    // const updateUserSelectedItems = (items: Item[]) => {
+    //    items.map((item) => setUserSelectedValues(prevSelected =>  prevSelected.includes(item.value)
+    //        ? prevSelected : [...prevSelected, item.value]));
+    // };
+
+
     const toggleSelection = (value: string) => {
-        setUserSelectedItems((prevSelected) => {
-            const isPreSelected = prevSelected.includes(value);
-            const updatedSelectedItems = isPreSelected
-                ? prevSelected.filter((item) => item !== value)
-                : [...prevSelected, value];
+        setUserSelectedValues((prevUserSelected) => {
+            const isUserPreSelected = prevUserSelected.includes(value);
+            const isPreSelected = preSelectedItems.some(item => item.value === value);
+            const updatedSelectedItems =
+                isUserPreSelected ? prevUserSelected.filter((item) => item !== value)
+                : [...prevUserSelected, value];
 
             if (isPreSelected) {
-                // we need to filter it out the pre-selected list
+                // we need to filter it out the pre-selected list - if it is not in the fetched items.
                 const updatedPreSelectedItems = preSelectedItems.filter(item => item.value !== value);
                 setPreSelectedItems(updatedPreSelectedItems);
+
                 // Update the items state to re-render list after removing pre-selected
                 setItems(prevItems => prevItems.filter(item => item.value !== value));
             }
@@ -46,10 +51,11 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
     useEffect(() => {
         const fetchInitialSelectedItems = async () => {
             setLoadingCount(prevCount => prevCount + 1);
-            const selectedItems = await getItemsById(initialSelectedIds);
-            setItems(selectedItems);
-            updateUserSelectedItems(selectedItems);
-            setPreSelectedItems(selectedItems);
+            const fetchedPreSelected = await getItemsById(initialSelectedIds);
+            setItems(fetchedPreSelected);
+            // updateUserSelectedItems(fetchedPreSelected);
+            setPreSelectedItems(fetchedPreSelected);
+            setPreSelectedNames(fetchedPreSelected.map(item => item.name));
             setLoadingCount(prevCount => prevCount - 1);
         };
 
@@ -118,9 +124,14 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
         <Container>
             <SearchInput type="text" placeholder="Search..." onChange={handleSearchChange}/>
             <List>
+                {preSelectedItems.map((item) => (
+                    <ListItem key={item.value}
+                              className={ 'selected'}
+                              onClick={() => toggleSelection(item.value)}>{item.name}</ListItem>
+                ))}
                 {items.map((item) => (
                     <ListItem key={item.value}
-                              className={userSelectedItems.includes(item.value) ? 'selected' : ''}
+                              className={userSelectedValues.includes(item.value) ? 'selected' : ''}
                               onClick={() => toggleSelection(item.value)}>{item.name}</ListItem>
                 ))}
             </List>
