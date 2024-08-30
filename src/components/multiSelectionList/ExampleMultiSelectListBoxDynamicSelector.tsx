@@ -23,7 +23,6 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
        items.map((item) => setUserSelectedItems(prevSelected =>  prevSelected.includes(item.value)
            ? prevSelected : [...prevSelected, item.value]));
     };
-
     const toggleSelection = (value: string) => {
         setUserSelectedItems((prevSelected) => {
             const isSelected = prevSelected.includes(value);
@@ -31,18 +30,18 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
                 ? prevSelected.filter((item) => item !== value)
                 : [...prevSelected, value];
 
-            // Check if the item being unselected is a pre-selected item
-            if (isSelected && preSelectedItems.some(item => item.value === value)) {
-                // Remove the item from preSelectedItems
+            if (isSelected) {
+                // Check if the item being unselected is a pre-selected item
                 const updatedPreSelectedItems = preSelectedItems.filter(item => item.value !== value);
                 setPreSelectedItems(updatedPreSelectedItems);
+
+                // Update the items state to reflect the removal of the unselected pre-selected item
+                setItems(prevItems => prevItems.filter(item => item.value !== value));
             }
 
             return updatedSelectedItems;
         });
-    }
-
-
+    };
 
 
     useEffect(() => {
@@ -85,7 +84,7 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
         };
 
         fetchItems();
-    }, [searchTerm, page, searchFunction]);
+    }, [searchTerm, page]);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
