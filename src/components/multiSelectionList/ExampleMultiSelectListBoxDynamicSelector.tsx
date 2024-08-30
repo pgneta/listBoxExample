@@ -25,17 +25,16 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
     };
     const toggleSelection = (value: string) => {
         setUserSelectedItems((prevSelected) => {
-            const isSelected = prevSelected.includes(value);
-            const updatedSelectedItems = isSelected
+            const isPreSelected = prevSelected.includes(value);
+            const updatedSelectedItems = isPreSelected
                 ? prevSelected.filter((item) => item !== value)
                 : [...prevSelected, value];
 
-            if (isSelected) {
-                // Check if the item being unselected is a pre-selected item
+            if (isPreSelected) {
+                // we need to filter it out the pre-selected list
                 const updatedPreSelectedItems = preSelectedItems.filter(item => item.value !== value);
                 setPreSelectedItems(updatedPreSelectedItems);
-
-                // Update the items state to reflect the removal of the unselected pre-selected item
+                // Update the items state to re-render list after removing pre-selected
                 setItems(prevItems => prevItems.filter(item => item.value !== value));
             }
 
@@ -72,14 +71,15 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
             } else {
                 setNewData(true);
             }
-
-            setItems((prevItems) => {
-                const newItems = [...preSelectedItems, ...prevItems, ...fetchedItems];
-                const uniqueItems = Array.from(
-                    new Set(newItems.map((item) => item.value))
-                ).map((value) => newItems.find((item) => item.value === value)!);
-                return uniqueItems;
-            });
+            setItems((prevItems) =>
+                // get unique items from preSelectedItems and prevItems with new fetched items
+                [...preSelectedItems, ...prevItems, ...fetchedItems].reduce((acc, item) => {
+                    if (!acc.find(existingItem => existingItem.value === item.value)) {
+                        acc.push(item);
+                    }
+                    return acc;
+                }, [] as Item[])
+            );
             setLoadingCount(prevCount => prevCount - 1);
         };
 
@@ -99,7 +99,6 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
         if (!newData) {
             return;
         }
-        // setItems((prevItems) => [...prevItems, ...preSelectedItems]);
         setPage((prevPage) => prevPage + 1);
     };
     const handleShowLess = () => {
