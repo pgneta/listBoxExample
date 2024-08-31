@@ -1,4 +1,3 @@
-// mockFunctions.ts
 import {PAGE_SIZE} from "../consts";
 
 export const longItemsNameValue = Array.from(

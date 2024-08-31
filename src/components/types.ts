@@ -4,7 +4,7 @@ export interface Item {
     selected?: boolean;}
 
 export interface ListBoxProps {
-    initialSelectedIds: string[];
+    initialSelectedIds?: string[];
     searchFunction: (text: string, page: number) => Promise<Item[]>;
     getItemsById: (ids: string[]) => Promise<Item[]>;
     pageSize: number;

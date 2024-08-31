@@ -1,35 +1,42 @@
 import styled from 'styled-components';
 
-// Grasshopper colors:
+// Grasshopper Blue colors:
 const DARK_BLUE = '#0f3294';
 const SILVER = '#cccccc';
-const LIGHT_BLUE = '#0fc8ef';
 const TORY_BLUE = '#123dbc';
 const BLUE_FOR_BUTTON = '#2075b6'
-const HOVER_BLUE = '#123dbc';
 const BUTTON_SHADOW_COLOR = '#ceecfe';
-const BUTTON_SHADOW_COLOR2 = '#d0ecfee';
 const HOVER_TEXT_COLOR = '#05a8ff';
-// const HOVER_BLUE = '#4183be';
 
 export const Header = styled.h1`
     font-size: 24px;
+    text-align: center;
+    margin-top: 10px;
     margin-bottom: 10px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
     color: ${DARK_BLUE};
 `;
+
+export const Logo = styled.img`
+    height: 40px;
+    margin-right: 10px;`;
 export const Container = styled.div`
-    padding: 10px;
-    background-color: #f5f5f5;
-    display: flex;
-    flex-direction: column;
     align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    flex-direction: column;
     min-height: 50vh;
+    width: 40rem;
+    margin: 0 auto;
 `;
 
 export const List = styled.ul`
     list-style-type: none;
     padding: 0;
-    width: 40%;
+    width: 100%;
     max-height: 50vh;
     overflow-y: scroll;
     border: 1px solid #ccc;
@@ -70,13 +77,15 @@ export const ListItem = styled.li`
 
 export const SearchInput = styled.input`
     padding: 5px;
-    width: 40%;
+    width: 100%;
     border-radius: 10px;
 
 `;
 
 
-export const ButtonsContainer = styled.div``;
+export const ButtonsContainer = styled.div`
+    display: flex; 
+    justify-content: center;`;
 export const ShowButton = styled.button<{ disabled?: boolean }>`
     background-color: ${({disabled}) => (disabled ? '#ccc' : BLUE_FOR_BUTTON)};
     color: #fff;

@@ -1,6 +1,11 @@
 import React from "react";
-import {Header} from "./styled";
+import {Header, Logo} from "./styled";
+import logo from "./logo.png";
+
 
 export const ListHeader:React.FC = () => {
-    return( <Header>MultiSelectListBoxDynamicSelector - Example</Header>)
+    return( <Header>
+        <Logo src={logo} alt='logo'/>MultiSelectListBoxDynamicSelector - Example
+    </Header>
+)
 }

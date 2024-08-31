@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Item, ListBoxProps} from "../types";
-import {ButtonsContainer, Container, List, ListItem, SearchInput, ShowButton} from "../styled";
+import {Item, ListBoxProps} from "./types";
+import {ButtonsContainer, Container, List, ListItem, SearchInput, ShowButton} from "./styled";
 
 export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = ({
                                                                                       initialSelectedIds,
@@ -19,6 +19,10 @@ export const ExampleMultiSelectListBoxDynamicSelector: React.FC<ListBoxProps> = 
 
     useEffect(() => {
         const fetchPreSelectedItems = async () => {
+            if (!initialSelectedIds || initialSelectedIds.length === 0) {
+                setFetchPreSelectedCompleted(true);
+                return;
+            }
             setLoadingCount(prevCount => prevCount + 1);
             try {
                 const fetchedPreSelected = await getItemsById(initialSelectedIds);

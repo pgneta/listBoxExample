@@ -1,7 +1,7 @@
 // MultiSelectListBox.test.tsx
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import {ExampleMultiSelectListBoxDynamicSelector} from "../components/multiSelectionList/ExampleMultiSelectListBoxDynamicSelector";
+import {ExampleMultiSelectListBoxDynamicSelector} from "../components/ExampleMultiSelectListBoxDynamicSelector";
 import {mockGetItemsById, mockSearchItems} from "../mock/mockUtils"; // Mock functions
 
 describe('MultiSelectListBox Component', () => {
@@ -82,6 +82,23 @@ describe('MultiSelectListBox Component', () => {
 
         // Ensure loading indicator is gone
         expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+    });
+
+
+    it('no initial ids provided', async () => {
+        render(
+            <ExampleMultiSelectListBoxDynamicSelector
+                searchFunction={mockSearchItems}
+                getItemsById={mockGetItemsById}
+                pageSize={5}
+            />
+        );
+
+        // Check if item is found - list is shown
+        await waitFor(() => {
+            expect(screen.getByText(/^Item Name 3$/)).toBeInTheDocument();
+        }, { timeout: 6000 });
+
     });
 
 });
