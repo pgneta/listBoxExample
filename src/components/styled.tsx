@@ -23,14 +23,14 @@ export const Logo = styled.img`
     height: 40px;
     margin-right: 10px;`;
 export const Container = styled.div`
-    align-items: center;
     display: flex;
-    justify-content: center;
-    padding: 10px;
     flex-direction: column;
+    padding: 10px;
     min-height: 50vh;
     width: 40rem;
     margin: 0 auto;
+    align-items: flex-start; 
+    justify-content: flex-start;
 `;
 
 export const List = styled.ul`
@@ -38,11 +38,12 @@ export const List = styled.ul`
     padding: 0;
     width: 100%;
     max-height: 50vh;
-    overflow-y: scroll;
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-bottom: 10px;
     margin-top: 0;
+    height: 400px; 
+    overflow-y: auto; 
 `;
 
 export const ListItem = styled.li`
@@ -84,8 +85,13 @@ export const SearchInput = styled.input`
 
 
 export const ButtonsContainer = styled.div`
-    display: flex; 
-    justify-content: center;`;
+    display: flex;
+    justify-content: space-between;
+    width: 100%; 
+    margin-top: 10px; 
+    flex-direction: row;
+    `
+
 export const ShowButton = styled.button<{ disabled?: boolean }>`
     background-color: ${({disabled}) => (disabled ? '#ccc' : BLUE_FOR_BUTTON)};
     color: #fff;
@@ -96,6 +102,7 @@ export const ShowButton = styled.button<{ disabled?: boolean }>`
     margin-left: 10px;
     border-radius: 10px;
     font-weight: bold;
+    width: 45%;
     ${({disabled}) =>
             !disabled && `
     box-shadow: ${BUTTON_SHADOW_COLOR} -1px 0px 4px 4px;
