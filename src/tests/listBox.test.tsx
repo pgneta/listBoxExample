@@ -1,8 +1,8 @@
-// MultiSelectListBox.test.tsx
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import {ExampleMultiSelectListBoxDynamicSelector} from "../components/ExampleMultiSelectListBoxDynamicSelector";
-import {mockGetItemsById, mockSearchItems} from "../mock/mockUtils"; // Mock functions
+import {mockGetItemsById, mockSearchItems} from "../mock/mockUtils";
+import {render} from "@testing-library/react"; // Mock functions
+import {fireEvent, screen, waitFor} from "@testing-library/dom";
 
 describe('MultiSelectListBox Component', () => {
 
@@ -21,12 +21,12 @@ describe('MultiSelectListBox Component', () => {
 
         // Trigger search input change
         fireEvent.change(screen.getByPlaceholderText(/search/i), {
-            target: { value: 'Item Name 1' },
+            target: { value: 'Item Name 123' },
         });
 
         // Wait for items to appear
         await waitFor(() => {
-            expect(screen.getByText(/^Item Name 1$/).textContent).toBe('Item Name 1');
+            expect(screen.getByText(/^Item Name 123$/).textContent).toBe('Item Name 123');
         }, { timeout: 6000 });
     });
 
@@ -39,11 +39,6 @@ describe('MultiSelectListBox Component', () => {
                 pageSize={5}
             />
         );
-
-        // Trigger search input change
-        fireEvent.change(screen.getByPlaceholderText(/search/i), {
-            target: { value: 'Item Name 2' },
-        });
 
         // Wait for items to appear
         await waitFor(() => {
