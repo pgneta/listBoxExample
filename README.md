@@ -25,3 +25,10 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 ### Additional 2 Features :
 1. show less
 2. indicator of total shown items
+
+### `Instructions:`
+1. clone project → https://github.com/pgneta/listBoxExample.git
+2. run yarn install
+3. run yarn build
+4. In order to run App → yarn start
+5. In order to run unit tests →  yarn test     
